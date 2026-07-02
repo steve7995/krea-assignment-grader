@@ -1,0 +1,71 @@
+{
+  "assignment_title": "Management Information Systems — MBA Assignment",
+  "questions": [
+    {
+      "question_number": 1,
+      "question_text": "Define management information systems. Explain the need and benefits of management information systems with the help of an organization as an example.",
+      "max_points": 10,
+      "question_type": "open_ended",
+      "rubric": {
+        "keywords": [
+          "management information system", "MIS", "decision-making",
+          "planning", "control", "coordination", "data", "information",
+          "efficiency", "inventory", "forecast", "sales", "organization"
+        ],
+        "concepts_required": "1. Define MIS: a system involving people, processes, and technology that collects, processes, stores, and disseminates data to support managerial decision-making. 2. State at least three core MIS functions (planning, control, coordination, analysis, decision-making). 3. Name a real organization and describe at least two specific benefits MIS provides to it (e.g., inventory tracking, demand forecasting, sales analysis, promotion planning).",
+        "model_answer": "A management information system (MIS) is a system that provides information needed to manage organizations efficiently and effectively. MIS involves people, processes, and technology to collect, process, store, and disseminate data for decision-making. The major functions of MIS are planning, control, coordination, analysis, and decision-making. For example, a retail chain like Walmart uses an MIS to track inventory levels, sales data, and customer purchasing behavior. The system helps managers ensure shelves are stocked, forecast demand, and plan promotions.",
+        "explanation_notes": "TIER 1 (MIS definition, 3 marks): Full if the answer states the purpose (supporting decisions) AND names at least two components (people, process, technology or equivalent). Partial (1-2 marks) if only purpose or only components are mentioned. TIER 2 (MIS functions, 3 marks): 1 mark per correctly named and briefly explained function, max 3. Listing names without explanation earns 0.5 per function. TIER 3 (organizational example, 4 marks): 2 marks for naming a real organization; 2 marks for describing at least two specific, concrete benefits MIS provides to it. Deduct 1 mark if the example is generic or benefits are not linked to the named organization. GLOBAL RULES: Minimum 80 words required; flag responses under this threshold as potentially incomplete. Award partial credit at every tier — do not apply all-or-nothing scoring."
+      }
+    },
+    {
+      "question_number": 2,
+      "question_text": "Explain DBMS. Discuss differences between traditional file processing systems and DBMS using appropriate examples from organizations.",
+      "max_points": 10,
+      "question_type": "open_ended",
+      "rubric": {
+        "keywords": [
+          "DBMS", "database management system", "traditional file processing",
+          "data redundancy", "data integrity", "data sharing", "security",
+          "flexibility", "centralized", "access control", "queries", "consistency"
+        ],
+        "concepts_required": "1. Define DBMS as software that manages structured data enabling efficient storage, retrieval, and manipulation. 2. State and explain at least four differences between traditional file processing and DBMS, each covering a distinct dimension (redundancy, integrity, sharing, security, flexibility). 3. For each difference, explain the trade-off — not just the label. 4. Include at least one real-world organizational example that maps to one of the stated differences.",
+        "model_answer": "A Database Management System (DBMS) is software that manages data in a structured way, enabling efficient storage, retrieval, and manipulation. Differences from traditional file processing: Data redundancy is high in traditional systems as data may be duplicated across files, whereas DBMS centralizes data to reduce redundancy. Data integrity is hard to enforce in traditional systems, while DBMS applies rules and constraints. Data sharing is limited in traditional systems, while DBMS allows controlled sharing across users. Security is minimal in traditional systems with no access control, while DBMS provides user-based permissions. Flexibility is low in traditional systems for complex queries, while DBMS supports ad-hoc and complex queries.",
+        "explanation_notes": "TIER 1 (DBMS definition, 2 marks): Full if the answer mentions structured data storage, retrieval, and some form of management software. Partial (1 mark) if only one aspect is covered. TIER 2 (differences, 6 marks): 1 mark each for up to 6 correctly explained differences; 0.5 marks if a difference is named but not explained. Minimum of 4 differences required for full credit on this tier. TIER 3 (organizational example, 2 marks): 1 mark for naming any real organization; 1 additional mark if the example is clearly linked to one of the stated differences. GLOBAL RULES: Accept any valid differences beyond the five listed in the model answer. Minimum 80 words required."
+      }
+    },
+    {
+      "question_number": 3,
+      "question_text": "Analyze how implementing a knowledge management system can create a sustained competitive advantage for an organization. Consider both tacit and explicit knowledge.",
+      "max_points": 10,
+      "question_type": "open_ended",
+      "rubric": {
+        "keywords": [
+          "knowledge management system", "KMS", "tacit knowledge", "explicit knowledge",
+          "competitive advantage", "sustained", "innovation", "efficiency",
+          "communities of practice", "mentoring", "repository", "wiki",
+          "institutional knowledge", "decision-making", "duplication"
+        ],
+        "concepts_required": "1. Define KMS and its purpose (captures, stores, shares, and manages organizational knowledge). 2. Define tacit knowledge correctly (personal, experience-based, hard to formalize) with an example. 3. Define explicit knowledge correctly (documented, easily shared) with an example. 4. Explain how KMS handles each type differently (e.g., communities of practice or mentoring for tacit; databases or wikis for explicit). 5. Analyze at least three mechanisms through which KMS creates sustained competitive advantage — the student must explain WHY/HOW, not just list WHAT.",
+        "model_answer": "A knowledge management system (KMS) captures, stores, shares, and effectively manages organizational knowledge to enhance performance and competitiveness. Tacit knowledge is personal and experience-based and hard to formalize, such as intuition or skills. KMS supports communities of practice, mentoring systems, or collaborative platforms to help transfer tacit knowledge. Explicit knowledge is documented and easily shared, such as manuals or reports. KMS stores this in databases, knowledge repositories, or wikis. A KMS creates sustained competitive advantage because it encourages innovation by building on shared knowledge, reduces duplication of effort and improves efficiency, improves decision-making through better information access, and retains institutional knowledge even when employees leave.",
+        "explanation_notes": "TIER 1 (KMS definition, 2 marks): Full if the answer covers both what KMS does (capture, store, share) and why (performance/competitiveness). Partial (1 mark) if only one aspect is present. TIER 2 (tacit knowledge, 2 marks): 1 mark for a correct definition with an example; 1 mark for explaining how KMS facilitates tacit knowledge transfer. TIER 3 (explicit knowledge, 2 marks): 1 mark for a correct definition with an example; 1 mark for explaining how KMS stores or distributes explicit knowledge. TIER 4 (competitive advantage analysis, 4 marks): 1 mark per mechanism that is both named AND explained (i.e., WHY it creates advantage), max 4. Listing mechanisms without explanation earns 0 marks per item. GLOBAL RULES: Deduct 1 mark if the student confuses tacit and explicit definitions. Minimum 100 words required given the analytical nature of the question."
+      }
+    },
+    {
+      "question_number": 4,
+      "question_text": "Explain how big data is important for an organization, like Krea University.",
+      "max_points": 10,
+      "question_type": "open_ended",
+      "rubric": {
+        "keywords": [
+          "big data", "structured", "unstructured", "semi-structured",
+          "predictive analytics", "forecasting", "real-time", "decision-making",
+          "innovation", "customer behavior", "volume", "velocity", "variety",
+          "Amazon", "Netflix", "student", "university"
+        ],
+        "concepts_required": "1. Define big data including its scale/complexity and the limitation of traditional systems; bonus if the 3Vs (volume, velocity, variety) are named. 2. List and briefly explain at least four distinct business benefits of big data (predictive analytics, customer experience, real-time decisions, innovation, product development, etc.). 3. Provide at least one concrete organizational example linking a named company to a specific big data use case. 4. Draw a relevant connection to an educational or university context (student performance, enrollment forecasting, personalized learning, resource allocation).",
+        "model_answer": "Big data refers to large, complex datasets — structured, semi-structured, or unstructured — that traditional systems cannot handle efficiently. Big data is important because it enables predictive analytics for forecasting trends, improves customer experience by analysing behaviour, enables real-time decision-making, and supports innovation and product development. For example, Amazon uses big data to recommend products based on browsing history and purchases, while Netflix analyses viewing patterns to suggest shows and create original content. For Krea University, big data could be used to track student academic performance, forecast enrollment, personalize learning pathways, and optimize campus resource allocation.",
+        "explanation_notes": "TIER 1 (big data definition, 2 marks): Full if the answer conveys large-scale complexity AND the limitation of traditional systems. Partial (1 mark) if only size/scale is mentioned without the traditional-systems limitation. Bonus (0.5 marks, up to tier max) if all three Vs are explicitly named. TIER 2 (benefits, 5 marks): 1 mark each for up to 5 distinct benefits that are named AND briefly explained. Listing without explanation earns 0 per item. TIER 3 (organizational example, 2 marks): 1 mark for naming a real organization; 1 additional mark for linking it to a specific big data use case (not generic). TIER 4 (university/educational context, 1 mark): Award if the student draws a relevant parallel to an educational institution or specifically to Krea University. GLOBAL RULES: Deduct 1 mark if benefits are listed as bullet words with zero explanation. Minimum 80 words required."
+      }
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "_comment": "RUBRIC TEMPLATE — copy this structure for any assignment. Fill in the bracketed placeholders. The four rubric fields map directly to the grader's RubricInput schema.",
+  "assignment_title": "[Assignment title]",
+  "questions": [
+    {
+      "_comment": "Repeat this block for each question.",
+      "question_number": 1,
+      "question_text": "[Paste the exact question text here]",
+      "max_points": 10,
+      "question_type": "open_ended",
+      "rubric": {
+
+        "keywords": [
+          "[key term 1]",
+          "[key term 2]",
+          "[key term 3]",
+          "...",
+          "_guidance: List 8-15 domain-specific terms the student must use to demonstrate subject knowledge. Include synonyms where the concept has more than one accepted label (e.g., 'revenue' and 'income'). The grader flags which keywords are present or absent — more keywords = finer-grained feedback."
+        ],
+
+        "concepts_required": "[Numbered list of the discrete concepts the student must cover to earn full marks. Each item should be a complete, testable criterion. Format: '1. [Concept + what demonstrating it looks like]. 2. [Next concept]. ...'. Aim for one item per 2 marks of max_points so the grader can apportion partial credit cleanly. Example for a 10-mark question: 5 numbered items.]",
+
+        "model_answer": "[Write a complete, correct answer at the level you expect from a strong student. This is the reference the AI compares the student's response against. It should cover every concept listed above, use the keywords naturally, and match the expected length — roughly 80-150 words per 10 marks for essay questions.]",
+
+        "explanation_notes": "[Scoring formula in this exact format — one line per mark tier: 'TIER 1 ([concept name], [X] marks): [what earns full marks]. Partial: [what earns half marks]. TIER 2 ([concept name], [X] marks): ... GLOBAL RULES: [any cross-cutting rules, e.g., deduct 1 mark if no real-world example, minimum 80 words required, flag verbatim model answer reproduction at 60%.]'. The tiers must sum to max_points.]"
+
+      }
+    }
+  ]
+}

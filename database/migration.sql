@@ -45,8 +45,55 @@ CREATE TABLE IF NOT EXISTS submissions (
   overall_feedback TEXT DEFAULT ''
 );
 
+-- New columns for question types and images
+ALTER TABLE questions ADD COLUMN IF NOT EXISTS question_type TEXT DEFAULT 'open_ended';
+ALTER TABLE questions ADD COLUMN IF NOT EXISTS options JSONB DEFAULT '[]';
+ALTER TABLE questions ADD COLUMN IF NOT EXISTS image_url TEXT;
+
 -- Indexes for performance
 CREATE INDEX IF NOT EXISTS idx_questions_assignment_id ON questions(assignment_id);
 CREATE INDEX IF NOT EXISTS idx_rubrics_question_id ON rubrics(question_id);
 CREATE INDEX IF NOT EXISTS idx_submissions_assignment_id ON submissions(assignment_id);
 CREATE INDEX IF NOT EXISTS idx_submissions_submitted_at ON submissions(submitted_at DESC);
+
+-- ── Auth, assignment locking & autosave (added) ──────────────────────────────
+
+-- Users table (teachers and students)
+CREATE TABLE IF NOT EXISTS users (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email TEXT UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL,
+  role TEXT NOT NULL CHECK (role IN ('teacher', 'student')),
+  name TEXT NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Assignment ownership + lifecycle
+ALTER TABLE assignments ADD COLUMN IF NOT EXISTS teacher_id UUID REFERENCES users(id);
+ALTER TABLE assignments ADD COLUMN IF NOT EXISTS status TEXT NOT NULL DEFAULT 'draft'; -- draft | published | closed
+ALTER TABLE assignments ADD COLUMN IF NOT EXISTS deadline TIMESTAMP WITH TIME ZONE;
+
+-- In-progress student attempts (autosave + locking), separate from graded submissions
+CREATE TABLE IF NOT EXISTS attempts (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  assignment_id UUID NOT NULL REFERENCES assignments(id) ON DELETE CASCADE,
+  student_id UUID NOT NULL REFERENCES users(id),
+  answers JSONB DEFAULT '{}',
+  status TEXT NOT NULL DEFAULT 'in_progress', -- in_progress | graded
+  session_token TEXT,
+  last_heartbeat TIMESTAMP WITH TIME ZONE,
+  tab_switch_count INTEGER DEFAULT 0,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  UNIQUE(assignment_id, student_id)
+);
+
+-- Link graded submissions back to the student and originating attempt
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS student_id UUID REFERENCES users(id);
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS attempt_id UUID REFERENCES attempts(id);
+
+CREATE INDEX IF NOT EXISTS idx_attempts_assignment_id ON attempts(assignment_id);
+CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+
+-- Time limit and auto-close support
+ALTER TABLE assignments ADD COLUMN IF NOT EXISTS time_limit_minutes INTEGER;
+ALTER TABLE assignments ADD COLUMN IF NOT EXISTS published_at TIMESTAMP WITH TIME ZONE;

@@ -2,13 +2,20 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../api/client';
 import LoadingSpinner from '../../components/LoadingSpinner';
-import type { Assignment } from '../../types';
+import type { Assignment, AssignmentStatus } from '../../types';
+
+const STATUS_STYLES: Record<AssignmentStatus, string> = {
+  draft: 'bg-gray-100 text-gray-600',
+  published: 'bg-green-100 text-green-700',
+  closed: 'bg-red-100 text-red-600',
+};
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
     api
@@ -17,6 +24,20 @@ export default function Dashboard() {
       .catch(() => setError('Failed to load assignments.'))
       .finally(() => setLoading(false));
   }, []);
+
+  const handleDelete = async (e: React.MouseEvent, id: string, title: string) => {
+    e.stopPropagation();
+    if (!window.confirm(`Delete "${title}" and all its submissions? This cannot be undone.`)) return;
+    setDeletingId(id);
+    try {
+      await api.delete(`/assignments/${id}`);
+      setAssignments((prev) => prev.filter((a) => a.id !== id));
+    } catch {
+      setError('Failed to delete assignment. Please try again.');
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   if (loading) return <LoadingSpinner message="Loading assignments..." />;
 
@@ -50,14 +71,19 @@ export default function Dashboard() {
       ) : (
         <div className="space-y-3">
           {assignments.map((a) => (
-            <button
+            <div
               key={a.id}
               onClick={() => navigate(`/teacher/assignments/${a.id}`)}
-              className="w-full text-left bg-white border border-gray-200 rounded-xl p-5 hover:border-indigo-300 hover:shadow-sm transition-all"
+              className="w-full text-left bg-white border border-gray-200 rounded-xl p-5 hover:border-indigo-300 hover:shadow-sm transition-all cursor-pointer"
             >
               <div className="flex items-start justify-between gap-4">
-                <div>
-                  <h2 className="font-semibold text-gray-900">{a.title}</h2>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <h2 className="font-semibold text-gray-900">{a.title}</h2>
+                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium capitalize ${STATUS_STYLES[a.status]}`}>
+                      {a.status}
+                    </span>
+                  </div>
                   <p className="text-sm text-gray-500 mt-0.5">by {a.teacher_name}</p>
                 </div>
                 <div className="flex items-center gap-4 flex-shrink-0">
@@ -66,13 +92,29 @@ export default function Dashboard() {
                     <p className="text-xs text-gray-400">submissions</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm text-gray-500">
-                      {new Date(a.created_at).toLocaleDateString()}
-                    </p>
+                    <p className="text-sm text-gray-500">{new Date(a.created_at).toLocaleDateString()}</p>
                   </div>
+                  <button
+                    onClick={(e) => handleDelete(e, a.id, a.title)}
+                    disabled={deletingId === a.id}
+                    className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-40"
+                    title="Delete assignment"
+                  >
+                    {deletingId === a.id ? (
+                      <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                      </svg>
+                    ) : (
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    )}
+                  </button>
                 </div>
               </div>
-            </button>
+            </div>
           ))}
         </div>
       )}

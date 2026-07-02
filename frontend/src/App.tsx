@@ -1,6 +1,10 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
 import Navbar from './components/Navbar';
 import Landing from './pages/Landing';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
 import CreateAssignment from './pages/teacher/CreateAssignment';
 import Dashboard from './pages/teacher/Dashboard';
 import AssignmentDetail from './pages/teacher/AssignmentDetail';
@@ -9,19 +13,51 @@ import Results from './pages/Results';
 
 function App() {
   return (
-    <BrowserRouter>
-      <div className="min-h-screen bg-white">
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route path="/teacher/create" element={<CreateAssignment />} />
-          <Route path="/teacher/dashboard" element={<Dashboard />} />
-          <Route path="/teacher/assignments/:assignmentId" element={<AssignmentDetail />} />
-          <Route path="/student/:assignmentId" element={<StudentView />} />
-          <Route path="/results/:submissionId" element={<Results />} />
-        </Routes>
-      </div>
-    </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter>
+        <div className="min-h-screen bg-white">
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<Landing />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route
+              path="/teacher/create"
+              element={
+                <ProtectedRoute role="teacher">
+                  <CreateAssignment />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/teacher/dashboard"
+              element={
+                <ProtectedRoute role="teacher">
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/teacher/assignments/:assignmentId"
+              element={
+                <ProtectedRoute role="teacher">
+                  <AssignmentDetail />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/student/:assignmentId"
+              element={
+                <ProtectedRoute role="student">
+                  <StudentView />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/results/:submissionId" element={<Results />} />
+          </Routes>
+        </div>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 

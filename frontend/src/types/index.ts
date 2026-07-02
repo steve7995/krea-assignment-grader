@@ -13,17 +13,53 @@ export interface Question {
   question_text: string;
   max_points: number;
   order_index: number;
+  question_type: 'open_ended' | 'mcq';
+  options: string[];
+  image_url: string | null;
   rubric: Rubric | null;
 }
+
+export type AssignmentStatus = 'draft' | 'published' | 'closed';
 
 export interface Assignment {
   id: string;
   title: string;
   teacher_name: string;
+  teacher_id?: string;
   created_at: string;
   is_published: boolean;
+  status: AssignmentStatus;
+  deadline?: string | null;
+  time_limit_minutes?: number | null;
+  published_at?: string | null;
   questions?: Question[];
   submission_count?: number;
+}
+
+export interface User {
+  id: string;
+  email?: string;
+  name: string;
+  role: 'teacher' | 'student';
+}
+
+export interface AttemptsSummary {
+  total_started: number;
+  in_progress: number;
+  submitted: number;
+  graded: number;
+}
+
+export interface Attempt {
+  id: string;
+  assignment_id: string;
+  student_id: string;
+  answers: Record<string, string>;
+  status: 'in_progress' | 'submitted' | 'graded';
+  session_token: string | null;
+  last_heartbeat: string | null;
+  tab_switch_count: number;
+  updated_at: string;
 }
 
 export interface RubricBreakdown {
