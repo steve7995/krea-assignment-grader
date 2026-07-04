@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime, timezone, timedelta
 import anthropic
+import asyncio
 import httpx
 import os
 import uuid
@@ -298,7 +299,8 @@ async def grade_attempt(assignment: dict, answers_map: dict) -> dict:
     if oe_questions:
         oe_assignment = {**assignment, "questions": oe_questions}
         messages = build_grading_messages(oe_assignment, answers_map)
-        message = anthropic_client.messages.create(
+        message = await asyncio.to_thread(
+            anthropic_client.messages.create,
             model="claude-haiku-4-5-20251001",
             max_tokens=4096,
             messages=messages,

@@ -5,22 +5,23 @@ Usage:
     pip install locust
     locust -f tests/locustfile.py --host=https://krea-assignment-grader-production.up.railway.app
 
-Then open http://localhost:8089 and set:
-    - Number of users: 10 (start), then 50, then 300
-    - Spawn rate: 2 (users added per second)
-    - Host: pre-filled from command above
-
-The test simulates the full student exam flow:
-    signup → start attempt → autosave (every 10s) + heartbeat (every 10s) → submit
+Each simulated student runs the full exam flow to completion in one deterministic
+sequence (signup -> load assignment -> start attempt -> N autosave/heartbeat rounds
+-> submit), then stops itself. This guarantees every spawned user reaches submit
+within the test window instead of relying on random task-scheduling luck.
 """
 
+import time
 import uuid
 import random
-from locust import HttpUser, task, between, events
+from locust import HttpUser, task, between
 
 # ── Config ────────────────────────────────────────────────────────────────────
 
-ASSIGNMENT_ID = "1074753b-f5c1-4904-bad7-17b9c96c5ef6"  # 30Q Business Management exam
+ASSIGNMENT_ID = "43ad07fc-d95d-438e-bb6f-cd3433b9aa78"  # 29Q Business Management exam, 15-min limit
+
+ANSWER_ROUNDS = 5          # how many autosave+heartbeat cycles before submitting
+ROUND_WAIT_SECONDS = (3, 6)  # pause between rounds, mimics time spent answering
 
 SAMPLE_ANSWERS = {
     "open_ended": [
@@ -57,19 +58,15 @@ def random_answers(question_ids: list) -> dict:
 # ── User behaviour ────────────────────────────────────────────────────────────
 
 class StudentUser(HttpUser):
-    """Simulates one student taking the exam end-to-end."""
+    """Simulates one student taking the exam end-to-end, then stops."""
 
-    wait_time = between(8, 12)  # seconds between tasks (mimics autosave interval)
+    wait_time = between(1, 1)
 
     def on_start(self):
-        """Called once when the simulated user starts. Signup + get assignment."""
         self.token = None
         self.question_ids = []
         self.session_token = str(uuid.uuid4())
-        self.submitted = False
-        self.save_count = 0
 
-        # 1. Sign up as a fresh student
         email = random_email()
         res = self.client.post("/auth/signup", json={
             "email": email,
@@ -84,7 +81,6 @@ class StudentUser(HttpUser):
 
         self.token = res.json().get("token")
 
-        # 2. Fetch assignment to get question IDs
         res = self.client.get(
             f"/assignments/{ASSIGNMENT_ID}",
             headers=self._headers(),
@@ -94,7 +90,6 @@ class StudentUser(HttpUser):
             questions = res.json().get("questions", [])
             self.question_ids = [q["id"] for q in questions]
 
-        # 3. Start attempt
         self.client.post(
             f"/assignments/{ASSIGNMENT_ID}/attempts/start",
             headers=self._headers(),
@@ -104,46 +99,31 @@ class StudentUser(HttpUser):
     def _headers(self):
         return {"Authorization": f"Bearer {self.token}"}
 
-    @task(3)
-    def autosave(self):
-        """Autosave answers — highest frequency task."""
-        if not self.token or self.submitted or not self.question_ids:
+    @task
+    def full_exam_flow(self):
+        if not self.token or not self.question_ids:
+            self.stop()
             return
-        answers = random_answers(self.question_ids)
-        self.client.put(
-            f"/assignments/{ASSIGNMENT_ID}/attempts/me",
-            json={"answers": answers},
-            headers=self._headers(),
-            name="/attempts/me (autosave)",
-        )
-        self.save_count += 1
 
-    @task(3)
-    def heartbeat(self):
-        """Send heartbeat to keep session alive."""
-        if not self.token or self.submitted:
-            return
+        for _ in range(ANSWER_ROUNDS):
+            answers = random_answers(self.question_ids)
+            self.client.put(
+                f"/assignments/{ASSIGNMENT_ID}/attempts/me",
+                json={"answers": answers},
+                headers=self._headers(),
+                name="/attempts/me (autosave)",
+            )
+            self.client.post(
+                f"/assignments/{ASSIGNMENT_ID}/attempts/heartbeat",
+                json={"session_token": self.session_token},
+                headers=self._headers(),
+                name="/attempts/heartbeat",
+            )
+            time.sleep(random.uniform(*ROUND_WAIT_SECONDS))
+
         self.client.post(
-            f"/assignments/{ASSIGNMENT_ID}/attempts/heartbeat",
-            json={"session_token": self.session_token},
-            headers=self._headers(),
-            name="/attempts/heartbeat",
-        )
-
-    @task(1)
-    def submit(self):
-        """Submit after enough autosaves (simulates ~2 minutes of work)."""
-        if not self.token or self.submitted or self.save_count < 3:
-            return
-        res = self.client.post(
             f"/assignments/{ASSIGNMENT_ID}/attempts/submit",
             headers=self._headers(),
             name="/attempts/submit",
         )
-        if res.status_code == 200:
-            self.submitted = True
-
-    def on_stop(self):
-        pass
-
-
+        self.stop()
