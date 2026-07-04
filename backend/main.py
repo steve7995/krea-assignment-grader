@@ -43,6 +43,32 @@ def now_iso() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
+# ── Assignment cache (reduces N+1 DB calls for concurrent students) ──────────
+# Keyed by assignment_id. Invalidated when assignment is published or closed.
+
+_assignment_cache: dict[str, dict] = {}
+_CACHE_TTL_SECONDS = 60  # re-fetch from DB at most once per minute
+
+
+def _cache_get(assignment_id: str) -> Optional[dict]:
+    entry = _assignment_cache.get(assignment_id)
+    if not entry:
+        return None
+    age = (datetime.now(timezone.utc) - entry["cached_at"]).total_seconds()
+    if age > _CACHE_TTL_SECONDS:
+        del _assignment_cache[assignment_id]
+        return None
+    return entry["data"]
+
+
+def _cache_set(assignment_id: str, data: dict) -> None:
+    _assignment_cache[assignment_id] = {"data": data, "cached_at": datetime.now(timezone.utc)}
+
+
+def _cache_invalidate(assignment_id: str) -> None:
+    _assignment_cache.pop(assignment_id, None)
+
+
 def get_deadline(assignment: dict) -> Optional[datetime]:
     published_at = assignment.get("published_at")
     time_limit = assignment.get("time_limit_minutes")
@@ -302,7 +328,12 @@ async def grade_attempt(assignment: dict, answers_map: dict) -> dict:
     }
 
 
-async def load_assignment_with_questions(assignment_id: str) -> dict:
+async def load_assignment_with_questions(assignment_id: str, use_cache: bool = True) -> dict:
+    if use_cache:
+        cached = _cache_get(assignment_id)
+        if cached:
+            return cached
+
     rows = await db_select("assignments", eq={"id": assignment_id})
     if not rows:
         raise HTTPException(status_code=404, detail="Assignment not found")
@@ -319,7 +350,9 @@ async def load_assignment_with_questions(assignment_id: str) -> dict:
         rubrics = await db_select("rubrics", eq={"question_id": q["id"]})
         questions_with_rubrics.append({**q, "rubric": rubrics[0] if rubrics else None})
 
-    return {**assignment, "questions": questions_with_rubrics}
+    result = {**assignment, "questions": questions_with_rubrics}
+    _cache_set(assignment_id, result)
+    return result
 
 
 # ── Auth endpoints ───────────────────────────────────────────────────────────
@@ -436,6 +469,7 @@ async def publish_assignment(assignment_id: str, user: CurrentUser = Depends(req
         "is_published": True,
         "published_at": now_iso(),
     })
+    _cache_invalidate(assignment_id)
     return {"status": "published"}
 
 
@@ -450,6 +484,7 @@ async def close_assignment(assignment_id: str, user: CurrentUser = Depends(requi
         raise HTTPException(status_code=400, detail="Assignment is already closed")
 
     await db_update("assignments", eq={"id": assignment_id}, data={"status": "closed"})
+    _cache_invalidate(assignment_id)
 
     # Grade any remaining in_progress attempts that don't have a submission yet
     assignment = await load_assignment_with_questions(assignment_id)
@@ -515,7 +550,8 @@ async def delete_assignment(assignment_id: str, user: CurrentUser = Depends(requ
 
 @app.get("/assignments/{assignment_id}")
 async def get_assignment(assignment_id: str, user: CurrentUser = Depends(get_current_user)):
-    return await load_assignment_with_questions(assignment_id)
+    # Teachers always get fresh data; students get cached data
+    return await load_assignment_with_questions(assignment_id, use_cache=(user.role == "student"))
 
 
 # ── Student attempts (autosave, resume, locking) ─────────────────────────────

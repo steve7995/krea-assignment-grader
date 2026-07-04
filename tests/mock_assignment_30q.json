@@ -1,0 +1,308 @@
+{
+  "title": "Business Management — Comprehensive Exam (30Q)",
+  "time_limit_minutes": 30,
+  "questions": [
+    {
+      "question_text": "What does SWOT stand for?",
+      "max_points": 2,
+      "question_type": "mcq",
+      "options": ["Skills, Work, Output, Trends", "Strengths, Weaknesses, Opportunities, Threats", "Strategy, Workflow, Operations, Tactics", "Sales, Workforce, Operations, Technology"],
+      "image_url": null,
+      "rubric": { "keywords": [], "concepts_required": "", "model_answer": "1", "explanation_notes": "" }
+    },
+    {
+      "question_text": "Which of the following is an INTERNAL factor in a SWOT analysis?",
+      "max_points": 2,
+      "question_type": "mcq",
+      "options": ["New government regulation", "Rising competitor activity", "Strong brand reputation", "Economic recession"],
+      "image_url": null,
+      "rubric": { "keywords": [], "concepts_required": "", "model_answer": "2", "explanation_notes": "" }
+    },
+    {
+      "question_text": "Which is NOT one of Porter's Five Forces?",
+      "max_points": 2,
+      "question_type": "mcq",
+      "options": ["Threat of new entrants", "Bargaining power of suppliers", "SWOT analysis", "Rivalry among existing competitors"],
+      "image_url": null,
+      "rubric": { "keywords": [], "concepts_required": "", "model_answer": "2", "explanation_notes": "" }
+    },
+    {
+      "question_text": "In the BCG matrix, what does a 'Star' represent?",
+      "max_points": 2,
+      "question_type": "mcq",
+      "options": ["Low market share, low growth", "High market share, high growth", "High market share, low growth", "Low market share, high growth"],
+      "image_url": null,
+      "rubric": { "keywords": [], "concepts_required": "", "model_answer": "1", "explanation_notes": "" }
+    },
+    {
+      "question_text": "Which pricing strategy involves setting a high initial price and lowering it over time?",
+      "max_points": 2,
+      "question_type": "mcq",
+      "options": ["Penetration pricing", "Cost-plus pricing", "Price skimming", "Competitive pricing"],
+      "image_url": null,
+      "rubric": { "keywords": [], "concepts_required": "", "model_answer": "2", "explanation_notes": "" }
+    },
+    {
+      "question_text": "What does ROI stand for?",
+      "max_points": 2,
+      "question_type": "mcq",
+      "options": ["Rate of Income", "Return on Investment", "Revenue over Inventory", "Risk of Inflation"],
+      "image_url": null,
+      "rubric": { "keywords": [], "concepts_required": "", "model_answer": "1", "explanation_notes": "" }
+    },
+    {
+      "question_text": "Which leadership style involves the team in decision-making?",
+      "max_points": 2,
+      "question_type": "mcq",
+      "options": ["Autocratic", "Laissez-faire", "Democratic", "Transactional"],
+      "image_url": null,
+      "rubric": { "keywords": [], "concepts_required": "", "model_answer": "2", "explanation_notes": "" }
+    },
+    {
+      "question_text": "What is the break-even point?",
+      "max_points": 2,
+      "question_type": "mcq",
+      "options": ["When profit is maximised", "When total revenue equals total costs", "When fixed costs are zero", "When variable costs exceed revenue"],
+      "image_url": null,
+      "rubric": { "keywords": [], "concepts_required": "", "model_answer": "1", "explanation_notes": "" }
+    },
+    {
+      "question_text": "Which of the following is an example of B2B (Business to Business)?",
+      "max_points": 2,
+      "question_type": "mcq",
+      "options": ["Amazon selling books to a customer", "A restaurant selling food to a student", "A supplier selling raw materials to a factory", "A store selling clothes to a shopper"],
+      "image_url": null,
+      "rubric": { "keywords": [], "concepts_required": "", "model_answer": "2", "explanation_notes": "" }
+    },
+    {
+      "question_text": "In the Ansoff Matrix, which strategy involves selling new products in new markets?",
+      "max_points": 2,
+      "question_type": "mcq",
+      "options": ["Market penetration", "Market development", "Product development", "Diversification"],
+      "image_url": null,
+      "rubric": { "keywords": [], "concepts_required": "", "model_answer": "3", "explanation_notes": "" }
+    },
+    {
+      "question_text": "Which financial statement shows a company's assets, liabilities, and equity?",
+      "max_points": 2,
+      "question_type": "mcq",
+      "options": ["Income statement", "Cash flow statement", "Balance sheet", "Profit and loss account"],
+      "image_url": null,
+      "rubric": { "keywords": [], "concepts_required": "", "model_answer": "2", "explanation_notes": "" }
+    },
+    {
+      "question_text": "What does 'economies of scale' mean?",
+      "max_points": 2,
+      "question_type": "mcq",
+      "options": ["Costs increase as production increases", "Cost per unit falls as production increases", "Revenue increases when prices rise", "Fixed costs decrease over time"],
+      "image_url": null,
+      "rubric": { "keywords": [], "concepts_required": "", "model_answer": "1", "explanation_notes": "" }
+    },
+    {
+      "question_text": "Which of the 4 Ps of marketing refers to how a product is delivered to the customer?",
+      "max_points": 2,
+      "question_type": "mcq",
+      "options": ["Product", "Price", "Place", "Promotion"],
+      "image_url": null,
+      "rubric": { "keywords": [], "concepts_required": "", "model_answer": "2", "explanation_notes": "" }
+    },
+    {
+      "question_text": "What is 'backward vertical integration'?",
+      "max_points": 2,
+      "question_type": "mcq",
+      "options": ["A company acquiring a distributor", "A company acquiring a supplier", "A company entering a new market", "A company merging with a competitor"],
+      "image_url": null,
+      "rubric": { "keywords": [], "concepts_required": "", "model_answer": "1", "explanation_notes": "" }
+    },
+    {
+      "question_text": "Which of the following best describes 'market segmentation'?",
+      "max_points": 2,
+      "question_type": "mcq",
+      "options": ["Reducing the price to gain market share", "Dividing a market into distinct groups of buyers", "Expanding into international markets", "Launching multiple products simultaneously"],
+      "image_url": null,
+      "rubric": { "keywords": [], "concepts_required": "", "model_answer": "1", "explanation_notes": "" }
+    },
+    {
+      "question_text": "Explain Porter's Five Forces model. Describe each force and explain how it helps a business assess its competitive environment.",
+      "max_points": 10,
+      "question_type": "open_ended",
+      "options": [],
+      "image_url": null,
+      "rubric": {
+        "keywords": ["rivalry", "suppliers", "buyers", "substitutes", "entrants", "competitive", "industry"],
+        "concepts_required": "Student must name and explain all five forces: competitive rivalry, supplier power, buyer power, threat of substitutes, threat of new entrants",
+        "model_answer": "Porter's Five Forces is a framework for analysing the competitive forces in an industry. The five forces are: 1) Competitive rivalry - intensity of competition among existing firms. 2) Bargaining power of suppliers - how much power suppliers have to raise prices. 3) Bargaining power of buyers - how much power customers have to demand lower prices. 4) Threat of substitutes - risk of customers switching to alternative products. 5) Threat of new entrants - how easy it is for new competitors to enter the market. Together these forces determine the profitability and attractiveness of an industry.",
+        "explanation_notes": "Award 2 marks per force correctly explained. Partial credit if student names all five but explains only some."
+      }
+    },
+    {
+      "question_text": "What is the difference between a leader and a manager? Use examples to support your answer.",
+      "max_points": 8,
+      "question_type": "open_ended",
+      "options": [],
+      "image_url": null,
+      "rubric": {
+        "keywords": ["vision", "people", "inspire", "control", "tasks", "process", "influence"],
+        "concepts_required": "Student must distinguish that leaders inspire and set direction while managers plan and control operations",
+        "model_answer": "Leaders focus on setting vision and inspiring people towards a goal. Managers focus on planning, organising, and controlling tasks to meet objectives. For example, a leader might inspire a team to embrace a new company direction, while a manager ensures deadlines and budgets are met. Leaders deal with change, managers deal with complexity.",
+        "explanation_notes": "Accept real-world examples. Award partial credit if distinction is clear even without examples."
+      }
+    },
+    {
+      "question_text": "Describe the four stages of the Product Life Cycle and explain what marketing strategies are appropriate at each stage.",
+      "max_points": 10,
+      "question_type": "open_ended",
+      "options": [],
+      "image_url": null,
+      "rubric": {
+        "keywords": ["introduction", "growth", "maturity", "decline", "sales", "profit", "marketing"],
+        "concepts_required": "Student must name all four stages and link appropriate marketing strategies to each",
+        "model_answer": "The four stages are: 1) Introduction - product launched, low sales, high costs, strategy is awareness through advertising. 2) Growth - sales rise rapidly, competition enters, strategy is differentiation and expanding distribution. 3) Maturity - sales peak, market saturated, strategy is promotions and product modifications. 4) Decline - sales fall, strategy is to cut costs, find new markets or discontinue.",
+        "explanation_notes": "Award 2.5 marks per stage. Deduct marks if no marketing strategy is mentioned for a stage."
+      }
+    },
+    {
+      "question_text": "Explain what Corporate Social Responsibility (CSR) means and give two examples of how a company might demonstrate CSR in practice.",
+      "max_points": 6,
+      "question_type": "open_ended",
+      "options": [],
+      "image_url": null,
+      "rubric": {
+        "keywords": ["society", "environment", "stakeholders", "ethical", "community", "sustainable"],
+        "concepts_required": "Student must define CSR as a business taking responsibility for its impact on society and environment, with concrete examples",
+        "model_answer": "CSR is when a business takes responsibility for its social, ethical, and environmental impact beyond just making profit. Examples include: reducing carbon emissions by switching to renewable energy, supporting local communities through charity work, using fair-trade suppliers, or ensuring ethical supply chains.",
+        "explanation_notes": "2 marks for definition, 2 marks per example. Examples must be specific and realistic."
+      }
+    },
+    {
+      "question_text": "Explain the Ansoff Matrix and describe a real or hypothetical business situation for each of its four strategies.",
+      "max_points": 10,
+      "question_type": "open_ended",
+      "options": [],
+      "image_url": null,
+      "rubric": {
+        "keywords": ["penetration", "development", "diversification", "existing", "new", "market", "product"],
+        "concepts_required": "Student must explain all four quadrants: market penetration, market development, product development, diversification — with a business example for each",
+        "model_answer": "The Ansoff Matrix is a strategic tool with four growth strategies: 1) Market Penetration - sell existing products to existing markets e.g. McDonald's offering discounts to existing customers. 2) Market Development - sell existing products to new markets e.g. Starbucks entering India. 3) Product Development - sell new products to existing markets e.g. Apple launching AirPods to existing iPhone users. 4) Diversification - new products to new markets e.g. Amazon entering the cloud computing industry.",
+        "explanation_notes": "Award 2.5 marks per strategy with example. Half marks if strategy is correct but no example given."
+      }
+    },
+    {
+      "question_text": "What is brand equity? Explain how a company can build strong brand equity over time.",
+      "max_points": 6,
+      "question_type": "open_ended",
+      "options": [],
+      "image_url": null,
+      "rubric": {
+        "keywords": ["brand", "loyalty", "awareness", "perception", "value", "trust", "reputation"],
+        "concepts_required": "Student must define brand equity as the commercial value derived from consumer perception of the brand name, and explain how to build it",
+        "model_answer": "Brand equity is the added value a brand name gives a product beyond its functional benefit. It is built through consistent quality, strong advertising, positive customer experiences, and emotional connection. Companies like Apple and Nike have high brand equity because customers trust and are loyal to them, allowing premium pricing.",
+        "explanation_notes": "Award 2 marks for definition, 4 marks for explanation of how to build it. Must include at least 2 specific methods."
+      }
+    },
+    {
+      "question_text": "Explain the difference between fixed costs and variable costs. Give two examples of each and explain how they affect a company's break-even point.",
+      "max_points": 8,
+      "question_type": "open_ended",
+      "options": [],
+      "image_url": null,
+      "rubric": {
+        "keywords": ["fixed", "variable", "output", "production", "rent", "wages", "break-even"],
+        "concepts_required": "Student must define both cost types, give examples, and explain the relationship with break-even",
+        "model_answer": "Fixed costs do not change with output e.g. rent and insurance. Variable costs change with output e.g. raw materials and direct labour. The break-even point is where total revenue equals total costs. Higher fixed costs raise the break-even point meaning more units must be sold to cover costs. Higher variable costs reduce the contribution per unit, also raising break-even.",
+        "explanation_notes": "Award 2 marks for definitions, 2 for examples, 4 for break-even explanation. Accept any valid examples."
+      }
+    },
+    {
+      "question_text": "What is supply chain management and why is it important for a business's competitive advantage?",
+      "max_points": 6,
+      "question_type": "open_ended",
+      "options": [],
+      "image_url": null,
+      "rubric": {
+        "keywords": ["supply chain", "suppliers", "logistics", "efficiency", "cost", "delivery", "competitive"],
+        "concepts_required": "Student must define supply chain management and link it to competitive advantage through cost, speed, or reliability",
+        "model_answer": "Supply chain management involves overseeing the flow of goods, information and money from raw material suppliers to the end customer. It is important because an efficient supply chain reduces costs, improves delivery speed and increases reliability — all of which give a competitive advantage. Companies like Zara use fast supply chains to bring new fashion to market quickly.",
+        "explanation_notes": "Award 2 marks for definition, 4 for competitive advantage link. Example is a bonus but not required."
+      }
+    },
+    {
+      "question_text": "Describe what is meant by organisational culture. Why does it matter for business performance?",
+      "max_points": 6,
+      "question_type": "open_ended",
+      "options": [],
+      "image_url": null,
+      "rubric": {
+        "keywords": ["culture", "values", "norms", "behaviour", "employees", "performance", "motivation"],
+        "concepts_required": "Student must define organisational culture as shared values and behaviours within a firm and link it to performance outcomes",
+        "model_answer": "Organisational culture is the shared values, beliefs, and norms that shape how employees behave and interact within a company. It matters because a strong positive culture boosts employee motivation, reduces staff turnover, improves collaboration, and aligns everyone with the company's goals. Companies like Google foster innovation through open cultures.",
+        "explanation_notes": "Award 2 marks for definition, 4 for explaining why it matters. Must link culture to at least two business outcomes."
+      }
+    },
+    {
+      "question_text": "Explain what working capital is and why managing it effectively is critical for a business's survival.",
+      "max_points": 6,
+      "question_type": "open_ended",
+      "options": [],
+      "image_url": null,
+      "rubric": {
+        "keywords": ["working capital", "current assets", "current liabilities", "liquidity", "cash flow", "survival"],
+        "concepts_required": "Student must define working capital as current assets minus current liabilities and explain the link to liquidity and business survival",
+        "model_answer": "Working capital is calculated as current assets minus current liabilities. It represents the funds available for day-to-day operations. Effective management is critical because even a profitable business can fail if it runs out of cash to pay suppliers and employees. Poor working capital management leads to a liquidity crisis and potential insolvency.",
+        "explanation_notes": "Award 2 marks for correct definition, 4 for survival explanation. Must mention cash flow or liquidity."
+      }
+    },
+    {
+      "question_text": "What is competitive advantage? Using a real company as an example, explain how it has achieved and sustained a competitive advantage.",
+      "max_points": 8,
+      "question_type": "open_ended",
+      "options": [],
+      "image_url": null,
+      "rubric": {
+        "keywords": ["competitive advantage", "unique", "superior", "cost", "differentiation", "sustainable", "example"],
+        "concepts_required": "Student must define competitive advantage, identify a type (cost leadership or differentiation), and apply it to a real company",
+        "model_answer": "Competitive advantage is what allows a company to outperform its rivals. It can come from cost leadership (e.g. Walmart keeping prices lower than competitors through efficient supply chains) or differentiation (e.g. Apple charging premium prices because of superior design and ecosystem). Sustaining it requires continuous innovation and protecting core competencies.",
+        "explanation_notes": "Award 2 marks for definition, 3 marks for type of advantage, 3 marks for company example and sustainability explanation."
+      }
+    },
+    {
+      "question_text": "Explain the difference between B2B and B2C marketing. How does the buying decision process differ between the two?",
+      "max_points": 6,
+      "question_type": "open_ended",
+      "options": [],
+      "image_url": null,
+      "rubric": {
+        "keywords": ["B2B", "B2C", "business", "consumer", "rational", "emotional", "decision", "relationship"],
+        "concepts_required": "Student must distinguish B2B from B2C and explain that B2B decisions are more rational and relationship-driven while B2C are often more emotional and impulsive",
+        "model_answer": "B2B marketing targets businesses while B2C targets individual consumers. In B2B, buying decisions are more rational, involve multiple stakeholders, longer sales cycles, and focus on ROI and value. In B2C, decisions are often quicker, more emotional, and driven by branding and personal preferences. B2B relationships tend to be long-term contracts while B2C is often transactional.",
+        "explanation_notes": "Award 3 marks for distinguishing the two, 3 marks for explaining differences in the buying decision process."
+      }
+    },
+    {
+      "question_text": "A company is considering entering a new international market. What factors should it consider before making this decision?",
+      "max_points": 8,
+      "question_type": "open_ended",
+      "options": [],
+      "image_url": null,
+      "rubric": {
+        "keywords": ["political", "economic", "cultural", "legal", "competition", "risk", "market research", "PESTLE"],
+        "concepts_required": "Student must identify multiple macro and micro factors relevant to international market entry, ideally using PESTLE or similar framework",
+        "model_answer": "Before entering a new international market a company should consider: political stability and trade regulations, economic conditions (GDP, inflation, purchasing power), cultural differences and consumer behaviour, legal requirements including local laws and IP protection, competitive landscape, infrastructure and logistics, and currency risk. A PESTLE analysis is a useful framework for this evaluation.",
+        "explanation_notes": "Award 1 mark per valid factor up to 6, plus 2 marks for overall structure and coherence. PESTLE reference is a bonus."
+      }
+    },
+    {
+      "question_text": "What is market segmentation? Explain the four main bases for segmenting a consumer market and give one example for each.",
+      "max_points": 8,
+      "question_type": "open_ended",
+      "options": [],
+      "image_url": null,
+      "rubric": {
+        "keywords": ["demographic", "geographic", "psychographic", "behavioural", "segmentation", "target", "group"],
+        "concepts_required": "Student must define segmentation and correctly describe all four bases: demographic, geographic, psychographic, behavioural — with one example each",
+        "model_answer": "Market segmentation is dividing a market into groups of consumers with similar characteristics. The four bases are: 1) Demographic - age, gender, income e.g. luxury cars targeting high-income earners. 2) Geographic - location e.g. winter clothing marketed in cold regions. 3) Psychographic - lifestyle and values e.g. organic food brands targeting health-conscious consumers. 4) Behavioural - usage patterns e.g. airlines offering loyalty programmes to frequent flyers.",
+        "explanation_notes": "Award 2 marks per base correctly explained with example. Half marks if base is named but example is missing."
+      }
+    }
+  ]
+}
