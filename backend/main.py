@@ -199,7 +199,7 @@ _JSON_SCHEMA = """\nReturn ONLY valid JSON with no additional text, markdown, or
       "question_id": "<exact question id from above>",
       "score": <number between 0 and max_points>,
       "max_score": <max_points value>,
-      "feedback": "<specific, constructive feedback>",
+      "feedback": "<one concise sentence of specific, constructive feedback>",
       "keywords_found": ["<keywords present in the student answer>"],
       "keywords_missing": ["<keywords absent from the student answer>"],
       "rubric_breakdown": {
@@ -212,27 +212,26 @@ _JSON_SCHEMA = """\nReturn ONLY valid JSON with no additional text, markdown, or
   ],
   "total_score": <sum of all question scores>,
   "total_max_score": <sum of all max_points>,
-  "overall_feedback": "<overall feedback paragraph>"
+  "overall_feedback": "<one concise sentence overall feedback>"
 }"""
 
 
 def build_grading_messages(assignment: dict, answers_map: dict) -> list:
-    """Build Anthropic API messages, supporting both text and image answers."""
+    """Build Anthropic API messages, supporting both text and image answers.
+
+    The rubric/question block is identical for every student submitting the same
+    assignment, so it's kept in its own content block with cache_control set —
+    Anthropic caches it and later submissions within the cache window pay only a
+    fraction of the input-token cost for that block. Only the student's answers
+    (which vary per submission) go in the uncached block.
+    """
     image_answers = []  # list of (question_id, url)
     questions_section = ""
 
     for q in assignment["questions"]:
         rubric = q.get("rubric") or {}
-        raw_answer = answers_map.get(q["id"], "No answer provided")
         keywords = rubric.get("keywords", [])
         keywords_str = ", ".join(keywords) if isinstance(keywords, list) else str(keywords)
-
-        if raw_answer.startswith("[IMAGE]"):
-            image_url = raw_answer[7:]
-            image_answers.append((q["id"], image_url))
-            answer_desc = f"[Student submitted a handwritten/drawn image — see image block tagged IMG_{q['id']} below]"
-        else:
-            answer_desc = raw_answer
 
         questions_section += f"""
 ---
@@ -242,25 +241,34 @@ Max Points: {q["max_points"]}
 Keywords to look for: {keywords_str}
 Concepts required: {rubric.get("concepts_required", "")}
 Model answer: {rubric.get("model_answer", "")}
-Explanation notes: {rubric.get("explanation_notes", "")}
-Student's answer: {answer_desc}
 """
 
-    header = (
+    static_header = (
         f'You are an AI grading assistant. Grade the student submission for "{assignment["title"]}".\n'
         f"Evaluate each answer against its rubric. Be fair but thorough.\n\n"
         f"Questions and Rubrics:\n{questions_section}"
     )
 
-    if not image_answers:
-        return [{"role": "user", "content": header + _JSON_SCHEMA}]
+    answers_section = "\nStudent's answers:\n"
+    for q in assignment["questions"]:
+        raw_answer = answers_map.get(q["id"], "No answer provided")
+        if raw_answer.startswith("[IMAGE]"):
+            image_url = raw_answer[7:]
+            image_answers.append((q["id"], image_url))
+            answer_desc = f"[Student submitted a handwritten/drawn image — see image block tagged IMG_{q['id']} below]"
+        else:
+            answer_desc = raw_answer
+        answers_section += f"\nQuestion ID: {q['id']}\nStudent's answer: {answer_desc}\n"
 
-    # Multimodal: interleave text + image blocks
-    content: list = [{"type": "text", "text": header}]
+    content: list = [
+        {"type": "text", "text": static_header, "cache_control": {"type": "ephemeral"}},
+        {"type": "text", "text": answers_section},
+    ]
     for qid, url in image_answers:
         content.append({"type": "text", "text": f"\nIMG_{qid}:"})
         content.append({"type": "image", "source": {"type": "url", "url": url}})
     content.append({"type": "text", "text": _JSON_SCHEMA})
+
     return [{"role": "user", "content": content}]
 
 
@@ -296,12 +304,35 @@ def grade_mcq(q: dict, student_answer: str) -> dict:
     }
 
 
+def _is_blank_answer(answer: Optional[str]) -> bool:
+    return not answer or not answer.strip()
+
+
+def _blank_answer_grade(q: dict) -> dict:
+    keywords = (q.get("rubric") or {}).get("keywords", [])
+    return {
+        "question_id": q["id"],
+        "score": 0,
+        "max_score": q["max_points"],
+        "feedback": "No answer submitted.",
+        "keywords_found": [],
+        "keywords_missing": keywords if isinstance(keywords, list) else [],
+        "rubric_breakdown": {"keywords_score": 0, "concepts_score": 0, "explanation_score": 0, "accuracy_score": 0},
+    }
+
+
 async def grade_attempt(assignment: dict, answers_map: dict) -> dict:
     """Grade a full set of answers against an assignment. Shared by the close-assignment flow."""
     mcq_questions = [q for q in assignment["questions"] if q.get("question_type") == "mcq"]
-    oe_questions = [q for q in assignment["questions"] if q.get("question_type") != "mcq"]
+    oe_questions_all = [q for q in assignment["questions"] if q.get("question_type") != "mcq"]
 
     mcq_grades = [grade_mcq(q, answers_map.get(q["id"], "")) for q in mcq_questions]
+
+    # Blank open-ended answers are graded locally (0 score) instead of spending
+    # tokens asking Claude to evaluate something the student never wrote.
+    oe_blank = [q for q in oe_questions_all if _is_blank_answer(answers_map.get(q["id"]))]
+    oe_questions = [q for q in oe_questions_all if not _is_blank_answer(answers_map.get(q["id"]))]
+    blank_grades = [_blank_answer_grade(q) for q in oe_blank]
 
     oe_grades = []
     overall_feedback = ""
@@ -311,7 +342,7 @@ async def grade_attempt(assignment: dict, answers_map: dict) -> dict:
         message = await asyncio.to_thread(
             anthropic_client.messages.create,
             model="claude-haiku-4-5-20251001",
-            max_tokens=4096,
+            max_tokens=3072,
             messages=messages,
         )
         try:
@@ -321,7 +352,7 @@ async def grade_attempt(assignment: dict, answers_map: dict) -> dict:
         except (json.JSONDecodeError, ValueError) as exc:
             raise HTTPException(status_code=500, detail=f"Failed to parse AI grading response: {exc}")
 
-    grades_by_id = {g["question_id"]: g for g in mcq_grades + oe_grades}
+    grades_by_id = {g["question_id"]: g for g in mcq_grades + oe_grades + blank_grades}
     ordered_grades = [grades_by_id[q["id"]] for q in assignment["questions"] if q["id"] in grades_by_id]
 
     total_score = sum(g["score"] for g in ordered_grades)
