@@ -339,10 +339,14 @@ async def grade_attempt(assignment: dict, answers_map: dict) -> dict:
     if oe_questions:
         oe_assignment = {**assignment, "questions": oe_questions}
         messages = build_grading_messages(oe_assignment, answers_map)
+        # Scale the output budget with the number of questions being graded in this
+        # call — a fixed cap truncates the JSON (and breaks parsing) once an
+        # assignment has enough open-ended questions in one batch.
+        max_tokens = min(8192, max(1024, 500 + 200 * len(oe_questions)))
         message = await asyncio.to_thread(
             anthropic_client.messages.create,
             model="claude-haiku-4-5-20251001",
-            max_tokens=3072,
+            max_tokens=max_tokens,
             messages=messages,
         )
         try:
