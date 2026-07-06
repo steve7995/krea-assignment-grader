@@ -10,6 +10,7 @@ import Dashboard from './pages/teacher/Dashboard';
 import AssignmentDetail from './pages/teacher/AssignmentDetail';
 import StudentView from './pages/student/StudentView';
 import Results from './pages/Results';
+import Students from './pages/admin/Students';
 
 function App() {
   return (
@@ -54,6 +55,14 @@ function App() {
               }
             />
             <Route path="/results/:submissionId" element={<Results />} />
+            <Route
+              path="/admin/students"
+              element={
+                <ProtectedRoute role="admin">
+                  <Students />
+                </ProtectedRoute>
+              }
+            />
           </Routes>
         </div>
       </BrowserRouter>

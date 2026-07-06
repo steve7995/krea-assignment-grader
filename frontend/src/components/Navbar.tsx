@@ -17,7 +17,7 @@ export default function Navbar() {
           GradeAI
         </Link>
         <div className="flex items-center gap-4">
-          {user?.role === 'teacher' && (
+          {(user?.role === 'teacher' || user?.role === 'admin') && (
             <>
               <button
                 onClick={() => navigate('/teacher/dashboard')}
@@ -32,6 +32,14 @@ export default function Navbar() {
                 New Assignment
               </button>
             </>
+          )}
+          {user?.role === 'admin' && (
+            <button
+              onClick={() => navigate('/admin/students')}
+              className="text-sm text-gray-600 hover:text-indigo-600 transition-colors"
+            >
+              Students
+            </button>
           )}
           {user ? (
             <div className="flex items-center gap-3">

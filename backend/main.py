@@ -8,13 +8,14 @@ import anthropic
 import asyncio
 import httpx
 import os
+import secrets
 import uuid
 import json
 import re
 from dotenv import load_dotenv
 
 import auth as auth_module
-from auth import CurrentUser, get_current_user, require_teacher, require_student
+from auth import CurrentUser, get_current_user, require_teacher, require_student, require_admin
 
 load_dotenv()
 
@@ -442,6 +443,31 @@ async def login(data: LoginRequest):
 @app.get("/auth/me")
 async def me(user: CurrentUser = Depends(get_current_user)):
     return {"id": user.id, "name": user.name, "role": user.role}
+
+
+# ── Admin endpoints (global student roster + password reset) ────────────────
+
+@app.get("/admin/students")
+async def list_students(user: CurrentUser = Depends(require_admin)):
+    students = await db_select("users", eq={"role": "student"}, order="created_at.desc")
+    return [
+        {"id": s["id"], "email": s["email"], "name": s["name"], "created_at": s["created_at"]}
+        for s in students
+    ]
+
+
+@app.post("/admin/students/{student_id}/reset-password")
+async def reset_student_password(student_id: str, user: CurrentUser = Depends(require_admin)):
+    rows = await db_select("users", eq={"id": student_id})
+    if not rows:
+        raise HTTPException(status_code=404, detail="Student not found")
+    if rows[0]["role"] != "student":
+        raise HTTPException(status_code=400, detail="This account is not a student")
+
+    temporary_password = secrets.token_urlsafe(9)
+    password_hash = await asyncio.to_thread(auth_module.hash_password, temporary_password)
+    await db_update("users", eq={"id": student_id}, data={"password_hash": password_hash})
+    return {"temporary_password": temporary_password}
 
 
 # ── Endpoints ────────────────────────────────────────────────────────────────

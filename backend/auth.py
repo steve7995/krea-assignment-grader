@@ -54,7 +54,7 @@ async def get_current_user(authorization: Optional[str] = Header(None)) -> Curre
 
 
 async def require_teacher(user: CurrentUser = Depends(get_current_user)) -> CurrentUser:
-    if user.role != "teacher":
+    if user.role not in ("teacher", "admin"):
         raise HTTPException(status_code=403, detail="Teacher access required")
     return user
 
@@ -62,4 +62,10 @@ async def require_teacher(user: CurrentUser = Depends(get_current_user)) -> Curr
 async def require_student(user: CurrentUser = Depends(get_current_user)) -> CurrentUser:
     if user.role != "student":
         raise HTTPException(status_code=403, detail="Student access required")
+    return user
+
+
+async def require_admin(user: CurrentUser = Depends(get_current_user)) -> CurrentUser:
+    if user.role != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
     return user

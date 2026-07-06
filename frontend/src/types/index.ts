@@ -40,7 +40,14 @@ export interface User {
   id: string;
   email?: string;
   name: string;
-  role: 'teacher' | 'student';
+  role: 'teacher' | 'student' | 'admin';
+}
+
+export interface StudentAccount {
+  id: string;
+  email: string;
+  name: string;
+  created_at: string;
 }
 
 export interface AttemptsSummary {

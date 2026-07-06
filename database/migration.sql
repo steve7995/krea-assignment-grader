@@ -97,3 +97,8 @@ CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
 -- Time limit and auto-close support
 ALTER TABLE assignments ADD COLUMN IF NOT EXISTS time_limit_minutes INTEGER;
 ALTER TABLE assignments ADD COLUMN IF NOT EXISTS published_at TIMESTAMP WITH TIME ZONE;
+
+-- ── Admin role (global student roster + password reset) ──────────────────────
+-- Admin is assigned by hand (direct DB update), never via signup.
+ALTER TABLE users DROP CONSTRAINT IF EXISTS users_role_check;
+ALTER TABLE users ADD CONSTRAINT users_role_check CHECK (role IN ('teacher', 'student', 'admin'));
