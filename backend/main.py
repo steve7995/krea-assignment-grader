@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime, timezone, timedelta
+from contextlib import asynccontextmanager
 import anthropic
 import asyncio
 import httpx
@@ -17,7 +18,18 @@ from auth import CurrentUser, get_current_user, require_teacher, require_student
 
 load_dotenv()
 
-app = FastAPI(title="Assignment Grader API")
+_http_client: Optional[httpx.AsyncClient] = None
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    global _http_client
+    _http_client = httpx.AsyncClient(timeout=30.0)
+    yield
+    await _http_client.aclose()
+
+
+app = FastAPI(title="Assignment Grader API", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -101,28 +113,25 @@ async def db_select(
             params[k] = f"eq.{v}"
     if order:
         params["order"] = order
-    async with httpx.AsyncClient() as client:
-        r = await client.get(f"{_REST}/{table}", params=params, headers=_BASE_HEADERS)
-        r.raise_for_status()
-        return r.json()
+    r = await _http_client.get(f"{_REST}/{table}", params=params, headers=_BASE_HEADERS)
+    r.raise_for_status()
+    return r.json()
 
 
 async def db_insert(table: str, data: dict) -> dict:
     headers = {**_BASE_HEADERS, "Prefer": "return=representation"}
-    async with httpx.AsyncClient() as client:
-        r = await client.post(f"{_REST}/{table}", json=data, headers=headers)
-        r.raise_for_status()
-        result = r.json()
-        return result[0] if isinstance(result, list) else result
+    r = await _http_client.post(f"{_REST}/{table}", json=data, headers=headers)
+    r.raise_for_status()
+    result = r.json()
+    return result[0] if isinstance(result, list) else result
 
 
 async def db_update(table: str, *, eq: dict, data: dict) -> list:
     headers = {**_BASE_HEADERS, "Prefer": "return=representation"}
     params = {k: f"eq.{v}" for k, v in eq.items()}
-    async with httpx.AsyncClient() as client:
-        r = await client.patch(f"{_REST}/{table}", params=params, json=data, headers=headers)
-        r.raise_for_status()
-        return r.json()
+    r = await _http_client.patch(f"{_REST}/{table}", params=params, json=data, headers=headers)
+    r.raise_for_status()
+    return r.json()
 
 
 async def db_count(table: str, *, eq: Optional[dict] = None) -> int:
@@ -344,12 +353,13 @@ async def load_assignment_with_questions(assignment_id: str, use_cache: bool = T
     questions = await db_select(
         "questions",
         eq={"assignment_id": assignment_id},
+        select="*,rubrics(*)",
         order="order_index.asc",
     )
 
     questions_with_rubrics = []
     for q in questions:
-        rubrics = await db_select("rubrics", eq={"question_id": q["id"]})
+        rubrics = q.pop("rubrics", None) or []
         questions_with_rubrics.append({**q, "rubric": rubrics[0] if rubrics else None})
 
     result = {**assignment, "questions": questions_with_rubrics}
@@ -370,10 +380,11 @@ async def signup(data: SignupRequest):
     if existing:
         raise HTTPException(status_code=409, detail="An account with this email already exists")
 
+    password_hash = await asyncio.to_thread(auth_module.hash_password, data.password)
     user = await db_insert("users", {
         "id": str(uuid.uuid4()),
         "email": data.email.lower().strip(),
-        "password_hash": auth_module.hash_password(data.password),
+        "password_hash": password_hash,
         "role": data.role,
         "name": data.name.strip(),
     })
@@ -385,7 +396,7 @@ async def signup(data: SignupRequest):
 @app.post("/auth/login")
 async def login(data: LoginRequest):
     rows = await db_select("users", eq={"email": data.email.lower().strip()})
-    if not rows or not auth_module.verify_password(data.password, rows[0]["password_hash"]):
+    if not rows or not await asyncio.to_thread(auth_module.verify_password, data.password, rows[0]["password_hash"]):
         raise HTTPException(status_code=401, detail="Invalid email or password")
 
     user = rows[0]
@@ -412,9 +423,8 @@ async def upload_image(file: UploadFile = File(...), user: CurrentUser = Depends
         "Authorization": f"Bearer {_SUPABASE_KEY}",
         "Content-Type": file.content_type or "application/octet-stream",
     }
-    async with httpx.AsyncClient() as client:
-        r = await client.post(storage_url, content=contents, headers=headers)
-        r.raise_for_status()
+    r = await _http_client.post(storage_url, content=contents, headers=headers)
+    r.raise_for_status()
 
     public_url = f"{_SUPABASE_URL}/storage/v1/object/public/question-images/{filename}"
     return {"url": public_url}
@@ -472,6 +482,7 @@ async def publish_assignment(assignment_id: str, user: CurrentUser = Depends(req
         "published_at": now_iso(),
     })
     _cache_invalidate(assignment_id)
+    await load_assignment_with_questions(assignment_id, use_cache=False)  # pre-warm before students arrive
     return {"status": "published"}
 
 
@@ -540,13 +551,12 @@ async def delete_assignment(assignment_id: str, user: CurrentUser = Depends(requ
         raise HTTPException(status_code=404, detail="Assignment not found")
     if rows[0]["teacher_id"] != user.id:
         raise HTTPException(status_code=403, detail="You do not own this assignment")
-    async with httpx.AsyncClient() as client:
-        r = await client.delete(
-            f"{_REST}/assignments",
-            params={"id": f"eq.{assignment_id}"},
-            headers=_BASE_HEADERS,
-        )
-        r.raise_for_status()
+    r = await _http_client.delete(
+        f"{_REST}/assignments",
+        params={"id": f"eq.{assignment_id}"},
+        headers=_BASE_HEADERS,
+    )
+    r.raise_for_status()
     return {"deleted": True}
 
 
